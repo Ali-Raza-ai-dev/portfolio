@@ -1,0 +1,118 @@
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+
+<header class="nav" id="nav">
+    <div class="wrap">
+        <!-- Logo -->
+        <a href="" class="logo" aria-label="Ali Raza Home">
+            ali<span class="dot">.</span>raza
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="links" aria-label="Main Navigation">
+            <NavLink href="" Match="NavLinkMatch.All">Home</NavLink>
+            <NavLink href="about">About</NavLink>
+
+            <!-- Services Dropdown -->
+            <div class="dd">
+                <button type="button" aria-haspopup="true">
+                    Services ▾
+                </button>
+                <div class="panel">
+                    <a href="services/rag-and-llm-agents">RAG &amp; LangGraph Agents</a>
+                    <a href="services/fastapi-backend-engineering">FastAPI Backend Engineering</a>
+                    <a href="services/workflow-automation">Workflow Automation (n8n &amp; Make)</a>
+                </div>
+            </div>
+
+            <!-- Tools Dropdown -->
+            <div class="dd">
+                <button type="button" aria-haspopup="true">
+                    Tools ▾
+                </button>
+                <div class="panel">
+                    <a href="tools">Developer Tools Hub</a>
+                    <a href="tools/video-speed">Video Speed &amp; Pitch</a>
+                    <a href="tools/collage">Photo Collage Studio</a>
+                </div>
+            </div>
+
+            <a href="#results" @onclick:preventDefault @onclick="@(() => ScrollToSection("results"))">Case Studies</a>
+            <a href="#certifications" @onclick:preventDefault @onclick="@(() => ScrollToSection("certifications"))">Certificates</a>
+        </nav>
+
+        <!-- CTA Action Button -->
+        <a href="#contact" class="pill pill-navy" @onclick:preventDefault @onclick="@(() => ScrollToSection("contact"))">
+            Start a Project <span class="ar">→</span>
+        </a>
+
+        <!-- Mobile Burger Button -->
+        <button class="burger" @onclick="ToggleMobileMenu" aria-label="Open mobile menu" aria-expanded="@isMobileOpen">
+            <i></i>
+            <i></i>
+        </button>
+    </div>
+</header>
+
+<!-- Mobile Slide-out Drawer -->
+@if (isMobileOpen)
+{
+    <div style="position:fixed; inset:0; background:rgba(6,23,58,0.7); backdrop-filter:blur(8px); z-index:150;" @onclick="CloseMobileMenu"></div>
+    <div style="position:fixed; top:0; right:0; width:85%; max-width:360px; height:100vh; background:var(--cream); border-left:2px solid var(--navy); z-index:160; padding:36px 28px; display:flex; flex-direction:column; justify-content:space-between; animation:fadeIn 0.25s ease;">
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px;">
+                <span class="logo">ali<span class="dot">.</span>raza</span>
+                <button @onclick="CloseMobileMenu" style="font-size:24px; cursor:pointer;">✕</button>
+            </div>
+            <nav style="display:flex; flex-direction:column; gap:16px;">
+                <a href="" style="font-size:18px; font-weight:700;" @onclick="CloseMobileMenu">Home</a>
+                <a href="about" style="font-size:18px; font-weight:700;" @onclick="CloseMobileMenu">About Ali</a>
+                <div style="font-family:var(--mono); font-size:11px; text-transform:uppercase; color:var(--muted); margin-top:8px;">Services</div>
+                <a href="services/rag-and-llm-agents" style="padding-left:12px; font-size:15px; font-weight:600;" @onclick="CloseMobileMenu">RAG &amp; LangGraph Agents</a>
+                <a href="services/fastapi-backend-engineering" style="padding-left:12px; font-size:15px; font-weight:600;" @onclick="CloseMobileMenu">FastAPI Backend</a>
+                <a href="services/workflow-automation" style="padding-left:12px; font-size:15px; font-weight:600;" @onclick="CloseMobileMenu">Workflow Automation</a>
+                <div style="font-family:var(--mono); font-size:11px; text-transform:uppercase; color:var(--muted); margin-top:8px;">Tools</div>
+                <a href="tools" style="padding-left:12px; font-size:15px; font-weight:600;" @onclick="CloseMobileMenu">All Tools Hub</a>
+                <a href="tools/video-speed" style="padding-left:12px; font-size:15px; font-weight:600;" @onclick="CloseMobileMenu">Video Speed &amp; Pitch</a>
+                <a href="tools/collage" style="padding-left:12px; font-size:15px; font-weight:600;" @onclick="CloseMobileMenu">Photo Collage Studio</a>
+                <div style="margin-top:12px; border-top:1px solid var(--line); padding-top:16px; display:flex; flex-direction:column; gap:12px;">
+                    <a href="#results" style="font-size:16px; font-weight:700;" @onclick="@(() => NavigateSectionMobile("results"))">Case Studies</a>
+                    <a href="#certifications" style="font-size:16px; font-weight:700;" @onclick="@(() => NavigateSectionMobile("certifications"))">Certificates</a>
+                </div>
+            </nav>
+        </div>
+
+        <div>
+            <a href="#contact" class="pill pill-navy" style="width:100%; justify-content:center;" @onclick="@(() => NavigateSectionMobile("contact"))">
+                Start a Project <span class="ar">→</span>
+            </a>
+        </div>
+    </div>
+}
+
+@code {
+    private bool isMobileOpen = false;
+
+    private void ToggleMobileMenu() => isMobileOpen = !isMobileOpen;
+    private void CloseMobileMenu() => isMobileOpen = false;
+
+    private async Task ScrollToSection(string elementId)
+    {
+        var uri = new Uri(Nav.Uri);
+        var path = uri.AbsolutePath.Trim('/');
+        if (!string.IsNullOrEmpty(path))
+        {
+            Nav.NavigateTo($"/#{elementId}");
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("portfolio.scrollToElement", elementId);
+        }
+    }
+
+    private async Task NavigateSectionMobile(string elementId)
+    {
+        CloseMobileMenu();
+        await ScrollToSection(elementId);
+    }
+}

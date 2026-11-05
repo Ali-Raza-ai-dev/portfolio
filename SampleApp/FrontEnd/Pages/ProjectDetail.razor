@@ -1,0 +1,149 @@
+@page "/projects/{Slug}"
+@using FrontEnd.Data
+@inject PortfolioApiClient Api
+@inject NavigationManager Nav
+
+<PageTitle>@(project?.Title ?? "Case Study") — Ali Raza</PageTitle>
+
+<div style="background:var(--cream); padding-top:140px; padding-bottom:120px;">
+    <div class="wrap">
+        <!-- Breadcrumb -->
+        <div style="display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:32px;">
+            <a href="" style="color:var(--navy);">HOME</a>
+            <span>/</span>
+            <a href="/#results" style="color:var(--navy);">CASE STUDIES</a>
+            <span>/</span>
+            <span style="color:var(--orange); font-weight:700;">@(project?.Title?.ToUpper() ?? Slug.ToUpper())</span>
+        </div>
+
+        @if (project != null)
+        {
+            <!-- Header -->
+            <div style="max-width:960px; margin-bottom:64px;">
+                <span class="tag" style="margin-bottom:16px;">
+                    <i></i> Case Study &bull; @project.Category
+                </span>
+                <h1 class="mega" style="margin-top:16px; font-size:clamp(38px, 5.2vw, 80px);">
+                    @project.Title
+                </h1>
+                <p style="font-size:clamp(18px, 1.6vw, 24px); line-height:1.45; color:var(--ink-2); margin-top:24px;">
+                    @project.Description
+                </p>
+
+                <!-- Action Buttons -->
+                <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:36px;">
+                    @if (!string.IsNullOrEmpty(project.DemoUrl))
+                    {
+                        <a href="@project.DemoUrl" target="_blank" rel="noopener" class="pill pill-navy">
+                            Launch Live Application <span class="ar">→</span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(project.GithubUrl))
+                    {
+                        <a href="@project.GithubUrl" target="_blank" rel="noopener" class="pill pill-line">
+                            Explore Source Code ↗
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Tech Stack Bar -->
+            <div style="background:var(--cream-2); border:1px solid var(--line); border-radius:18px; padding:28px 36px; margin-bottom:64px;">
+                <div style="font-family:var(--mono); font-size:12px; font-weight:700; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">
+                    Architecture Stack
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    @foreach (var t in project.TechStack)
+                    {
+                        <span style="font-family:var(--mono); font-size:13px; font-weight:600; padding:6px 14px; border-radius:8px; background:var(--cream); border:1px solid var(--navy); color:var(--navy);">
+                            @t
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <!-- Architecture Breakdown -->
+            @if (!string.IsNullOrEmpty(project.ArchitectureSummary))
+            {
+                <div style="margin-bottom:80px;">
+                    <span class="eyebrow">Technical Blueprint</span>
+                    <h2 style="font-size:clamp(30px, 3.6vw, 48px); margin-top:16px; margin-bottom:24px; letter-spacing:-.03em;">
+                        System Architecture
+                    </h2>
+                    <div class="card c1" style="min-height:auto; padding:44px 36px; font-size:17px; line-height:1.75;">
+                        @project.ArchitectureSummary
+                    </div>
+                </div>
+            }
+
+            <!-- Key Capabilities Grid -->
+            @if (project.KeyFeatures.Any())
+            {
+                <div style="margin-bottom:80px;">
+                    <span class="eyebrow">Engineering Highlights</span>
+                    <h2 style="font-size:clamp(30px, 3.6vw, 48px); margin-top:16px; margin-bottom:36px; letter-spacing:-.03em;">
+                        Key Capabilities &amp; Design Decisions
+                    </h2>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:20px;">
+                        @foreach (var feat in project.KeyFeatures)
+                        {
+                            <div class="mc" style="min-height:auto; padding:28px;">
+                                <div class="dots"><i></i><i></i><i></i></div>
+                                <h4 style="font-size:17px; line-height:1.45;">@feat</h4>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Benchmarks / Highlights -->
+            @if (project.Highlights.Any())
+            {
+                <div style="margin-bottom:96px;">
+                    <span class="eyebrow">Verified Outcomes</span>
+                    <h2 style="font-size:clamp(30px, 3.6vw, 48px); margin-top:16px; margin-bottom:36px; letter-spacing:-.03em;">
+                        Production Benchmarks
+                    </h2>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+                        @foreach (var h in project.Highlights)
+                        {
+                            <div class="card c2" style="min-height:auto; padding:32px;">
+                                <div class="k">Verified Benchmark</div>
+                                <h4 style="font-size:19px; line-height:1.35; margin-bottom:0;">@h</h4>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Back Footer Navigation -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1.5px solid var(--navy); padding-top:36px;">
+                <a href="/#results" class="pill pill-line">
+                    ← Back to all case studies
+                </a>
+                <a href="/#contact" class="pill pill-navy">
+                    Discuss Similar System <span class="ar">→</span>
+                </a>
+            </div>
+        }
+        else
+        {
+            <div style="text-align:center; padding:64px 0;">
+                <p style="font-size:18px; color:var(--muted);">Case study not found.</p>
+                <a href="" class="pill pill-navy" style="margin-top:24px;">Return to Home</a>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Slug { get; set; } = string.Empty;
+
+    private ProjectItem? project;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        project = await Api.GetProjectBySlugAsync(Slug);
+    }
+}

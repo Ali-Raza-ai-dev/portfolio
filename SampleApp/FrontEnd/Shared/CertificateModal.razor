@@ -1,0 +1,58 @@
+@using FrontEnd.Data
+
+@if (Certificate != null)
+{
+    <div class="modal-overlay" @onclick="Close">
+        <div class="modal-box" @onclick:stopPropagation>
+            <!-- Header -->
+            <div class="modal-header">
+                <div>
+                    <span class="eyebrow" style="font-size:16px;">Proof of Learning</span>
+                    <h4 style="font-size:22px; font-weight:700; color:var(--navy); margin-top:6px;">@Certificate.Title</h4>
+                    <p style="font-size:14px; color:var(--orange); font-weight:600;">@Certificate.Issuer &bull; <span style="font-family:var(--mono); color:var(--muted);">@Certificate.Date</span></p>
+                </div>
+                <button type="button" @onclick="Close" style="font-size:24px; cursor:pointer; color:var(--navy); padding:8px;">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Image -->
+            <div class="modal-body">
+                <img src="@Certificate.ImagePath" alt="@Certificate.Title" />
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <div style="font-family:var(--mono); font-size:12px; color:var(--navy); font-weight:600; display:flex; align-items:center; gap:8px;">
+                    <span style="width:8px; height:8px; border-radius:50%; background:var(--orange); display:inline-block;"></span>
+                    Verified Credential
+                </div>
+
+                <div style="display:flex; align-items:center; gap:12px;">
+                    @if (!string.IsNullOrEmpty(Certificate.CredentialUrl))
+                    {
+                        <a href="@Certificate.CredentialUrl" target="_blank" rel="noopener" class="pill pill-navy" style="padding:10px 20px; font-size:13px;">
+                            Verify on Issuer Site <span class="ar">→</span>
+                        </a>
+                    }
+                    <button type="button" class="pill pill-line" style="padding:10px 20px; font-size:13px;" @onclick="Close">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public CertificateItem? Certificate { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

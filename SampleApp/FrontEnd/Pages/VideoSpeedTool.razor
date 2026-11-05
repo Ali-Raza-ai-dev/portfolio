@@ -1,0 +1,165 @@
+@page "/tools/video-speed"
+@inject IJSRuntime JS
+
+<PageTitle>Video Speed &amp; Pitch Controller — Ali Raza</PageTitle>
+
+<div style="background:var(--cream); padding-top:140px; padding-bottom:120px;">
+    <div class="wrap">
+        <!-- Breadcrumb -->
+        <div style="display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:32px;">
+            <a href="" style="color:var(--navy);">HOME</a>
+            <span>/</span>
+            <a href="tools" style="color:var(--navy);">TOOLS</a>
+            <span>/</span>
+            <span style="color:var(--orange); font-weight:700;">VIDEO SPEED</span>
+        </div>
+
+        <!-- Header -->
+        <div style="max-width:960px; margin-bottom:48px;">
+            <span class="eyebrow">Browser Utility</span>
+            <h1 class="mega" style="margin-top:20px; font-size:clamp(38px, 5vw, 76px);">
+                Video Speed &amp; Pitch <span class="it"><span class="ul">Controller.</span></span>
+            </h1>
+            <p style="font-size:clamp(17px, 1.5vw, 22px); line-height:1.45; color:var(--ink-2); margin-top:20px;">
+                Accelerate or slow down video playback with pitch normalization. Runs 100% locally in your browser memory with zero tracking and zero server storage.
+            </p>
+        </div>
+
+        <!-- Main Studio Box -->
+        <div class="tool-studio-box">
+            <!-- Controls Panel -->
+            <div class="tool-grid">
+                <div class="tool-field">
+                    <label>Choose Local Video or Load Sample</label>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <InputFile OnChange="HandleFileSelected" accept="video/*" class="input-custom" style="padding:10px; font-size:13.5px; flex:1;" />
+                        <button type="button" class="pill pill-navy" style="padding:12px 20px; font-size:13px;" @onclick="LoadSampleVideo">
+                            Load Demo Video
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tool-field">
+                    <label>Pitch Normalization Engine</label>
+                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin-top:10px; font-size:15px; font-weight:600; color:var(--navy);">
+                        <input type="checkbox" @bind="preservePitch" @bind:after="ApplySpeedAndPitch" style="width:18px; height:18px; accent-color:var(--navy);" />
+                        <span>Preserve Speech Pitch (Prevent chipmunk voice)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Rate Slider & Presets -->
+            <div style="background:var(--cream); border:1px solid var(--line); border-radius:18px; padding:28px; margin-bottom:32px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <span style="font-size:16px; font-weight:700; color:var(--navy);">Playback Speed Multiplier</span>
+                    <span style="font-family:var(--mono); font-size:24px; font-weight:700; color:var(--navy);">
+                        @playbackRate.ToString("0.00")x
+                    </span>
+                </div>
+
+                <input type="range" min="0.25" max="4.0" step="0.05" @bind="playbackRate" @bind:after="ApplySpeedAndPitch" style="width:100%; height:8px; accent-color:var(--navy); cursor:pointer;" />
+
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:20px;">
+                    @foreach (var preset in presets)
+                    {
+                        <button type="button" class="pill @(Math.Abs(playbackRate - preset) < 0.01 ? "pill-navy" : "pill-line")" style="padding:8px 16px; font-size:13px;" @onclick="@(() => SetSpeed(preset))">
+                            @preset.ToString("0.0#")x
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Video Player -->
+            <div style="background:#000000; border-radius:18px; overflow:hidden; border:2px solid var(--navy); min-height:360px; display:flex; align-items:center; justify-content:center;">
+                @if (!string.IsNullOrEmpty(videoSource))
+                {
+                    <video @ref="videoRef" src="@videoSource" controls playsinline style="width:100%; max-height:560px; outline:none;" @onloadedmetadata="ApplySpeedAndPitch"></video>
+                }
+                else
+                {
+                    <div style="text-align:center; padding:48px 24px; color:var(--cream);">
+                        <h4 style="font-size:22px; margin-bottom:8px;">No Video Selected</h4>
+                        <p style="font-size:14px; opacity:0.8; max-width:400px; margin:0 auto 20px;">
+                            Choose an MP4/WebM video from your computer or load our sample video to test playback speed.
+                        </p>
+                        <button type="button" class="pill pill-orange" @onclick="LoadSampleVideo">
+                            Load Demo Video <span class="ar">→</span>
+                        </button>
+                    </div>
+                }
+            </div>
+
+            @if (!string.IsNullOrEmpty(videoSource))
+            {
+                <div style="display:flex; justify-content:center; gap:10px; margin-top:24px; flex-wrap:wrap;">
+                    <button type="button" class="pill pill-line" style="padding:8px 16px; font-size:13px;" @onclick="@(() => StepFrame(-1.0))">
+                        &laquo; -1s
+                    </button>
+                    <button type="button" class="pill pill-line" style="padding:8px 16px; font-size:13px;" @onclick="@(() => StepFrame(-0.033))">
+                        &lsaquo; Prev Frame
+                    </button>
+                    <button type="button" class="pill pill-line" style="padding:8px 16px; font-size:13px;" @onclick="@(() => StepFrame(0.033))">
+                        Next Frame &rsaquo;
+                    </button>
+                    <button type="button" class="pill pill-line" style="padding:8px 16px; font-size:13px;" @onclick="@(() => StepFrame(1.0))">
+                        +1s &raquo;
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private ElementReference videoRef;
+    private string? videoSource;
+    private double playbackRate = 1.0;
+    private bool preservePitch = true;
+    private readonly double[] presets = new[] { 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0 };
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            using var stream = file.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var base64 = Convert.ToBase64String(ms.ToArray());
+            videoSource = $"data:{file.ContentType};base64,{base64}";
+            StateHasChanged();
+            await Task.Delay(100);
+            await ApplySpeedAndPitch();
+        }
+    }
+
+    private async Task LoadSampleVideo()
+    {
+        videoSource = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+        StateHasChanged();
+        await Task.Delay(100);
+        await ApplySpeedAndPitch();
+    }
+
+    private async Task SetSpeed(double rate)
+    {
+        playbackRate = rate;
+        await ApplySpeedAndPitch();
+    }
+
+    private async Task ApplySpeedAndPitch()
+    {
+        if (!string.IsNullOrEmpty(videoSource))
+        {
+            await JS.InvokeVoidAsync("portfolio.setVideoSpeed", videoRef, playbackRate, preservePitch);
+        }
+    }
+
+    private async Task StepFrame(double seconds)
+    {
+        if (!string.IsNullOrEmpty(videoSource))
+        {
+            await JS.InvokeVoidAsync("portfolio.stepVideoFrame", videoRef, seconds);
+        }
+    }
+}

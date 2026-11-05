@@ -1,0 +1,124 @@
+@using FrontEnd.Data
+@inject PortfolioApiClient Api
+
+<div class="closing-form">
+    @if (submissionResult != null && submissionResult.Success)
+    {
+        <div style="text-align:center; padding:32px 16px;">
+            <div style="width:56px; height:56px; border-radius:50%; background:var(--navy); color:var(--orange); display:inline-flex; align-items:center; justify-content:center; margin-bottom:16px; font-size:24px;">
+                ✓
+            </div>
+            <h3 style="font-size:26px; font-weight:700; color:var(--navy); margin-bottom:8px;">Inquiry Transmitted</h3>
+            <p style="color:var(--ink-2); font-size:15px; line-height:1.6; margin-bottom:24px;">
+                @submissionResult.Message
+            </p>
+            <button type="button" class="pill pill-navy" @onclick="ResetForm">
+                Send Another Note
+            </button>
+        </div>
+    }
+    else
+    {
+        <form @onsubmit="HandleSubmit">
+            <h3 style="color:var(--navy);">Start a Conversation</h3>
+            <p style="font-size:14px; color:var(--muted); margin-top:-10px;">
+                Tell me about your system, your team's current bottlenecks, or the agent you want to build.
+            </p>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div style="padding:12px 16px; border-radius:10px; background:#FDE8E8; border:1px solid #F98080; color:#9B1C1C; font-size:13.5px;">
+                    @errorMessage
+                </div>
+            }
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="tool-field">
+                    <label>Your Name</label>
+                    <input type="text" class="input-custom" placeholder="e.g. Sarah Jenkins" @bind="model.Name" required />
+                </div>
+                <div class="tool-field">
+                    <label>Work Email</label>
+                    <input type="email" class="input-custom" placeholder="sarah@company.com" @bind="model.Email" required />
+                </div>
+            </div>
+
+            <div class="tool-field">
+                <label>Focus Area</label>
+                <select class="input-custom" @bind="model.Subject">
+                    <option value="RAG System & LangGraph Agents">RAG System &amp; LangGraph Agents</option>
+                    <option value="FastAPI Backend Engineering">FastAPI Backend Engineering</option>
+                    <option value="Workflow Automation (n8n & Make)">Workflow Automation (n8n &amp; Make)</option>
+                    <option value="Full-Stack AI Application">Full-Stack AI Application</option>
+                    <option value="General Architecture Consultation">General Architecture Consultation</option>
+                </select>
+            </div>
+
+            <div class="tool-field">
+                <label>What are you looking to solve?</label>
+                <textarea class="input-custom" style="min-height:120px; resize:vertical;" placeholder="Describe the manual process or the application scope..." @bind="model.Message" required></textarea>
+            </div>
+
+            <button type="submit" class="pill pill-navy" style="width:100%; justify-content:center; padding:16px;" disabled="@isSubmitting">
+                @if (isSubmitting)
+                {
+                    <span>Transmitting...</span>
+                }
+                else
+                {
+                    <span>Send Message <span class="ar">→</span></span>
+                }
+            </button>
+            <div style="text-align:center; font-size:12px; color:var(--muted); font-family:var(--mono);">
+                Free 30-min conversation first. Honest feedback if AI isn't the right fix.
+            </div>
+        </form>
+    }
+</div>
+
+@code {
+    private ContactFormModel model = new();
+    private bool isSubmitting = false;
+    private string? errorMessage;
+    private ContactMessageResponse? submissionResult;
+
+    private async Task HandleSubmit()
+    {
+        errorMessage = null;
+        if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Message))
+        {
+            errorMessage = "Please complete all required fields.";
+            return;
+        }
+
+        isSubmitting = true;
+        try
+        {
+            var req = new ContactMessageRequest(model.Name, model.Email, model.Subject, model.Message);
+            submissionResult = await Api.SubmitContactAsync(req);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error transmitting message: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void ResetForm()
+    {
+        model = new();
+        submissionResult = null;
+        errorMessage = null;
+    }
+
+    private class ContactFormModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Subject { get; set; } = "RAG System & LangGraph Agents";
+        public string Message { get; set; } = string.Empty;
+    }
+}

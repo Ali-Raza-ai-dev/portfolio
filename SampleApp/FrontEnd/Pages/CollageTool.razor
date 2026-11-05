@@ -1,0 +1,210 @@
+@page "/tools/collage"
+@inject IJSRuntime JS
+
+<PageTitle>Photo Collage Studio — Ali Raza</PageTitle>
+
+<div style="background:var(--cream); padding-top:140px; padding-bottom:120px;">
+    <div class="wrap">
+        <!-- Breadcrumb -->
+        <div style="display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:32px;">
+            <a href="" style="color:var(--navy);">HOME</a>
+            <span>/</span>
+            <a href="tools" style="color:var(--navy);">TOOLS</a>
+            <span>/</span>
+            <span style="color:var(--orange); font-weight:700;">PHOTO COLLAGE</span>
+        </div>
+
+        <!-- Header -->
+        <div style="max-width:960px; margin-bottom:48px;">
+            <span class="eyebrow">Browser Utility</span>
+            <h1 class="mega" style="margin-top:20px; font-size:clamp(38px, 5vw, 76px);">
+                Photo Collage <span class="it"><span class="ul">Studio.</span></span>
+            </h1>
+            <p style="font-size:clamp(17px, 1.5vw, 22px); line-height:1.45; color:var(--ink-2); margin-top:20px;">
+                Join two photos into one seamless composition — full pictures, custom borders, no cropping. Runs 100% locally in your browser memory.
+            </p>
+        </div>
+
+        <!-- Main Studio Box -->
+        <div class="tool-studio-box">
+            <!-- Upload Row -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:32px;">
+                <div class="tool-field">
+                    <label>First Image</label>
+                    <InputFile OnChange="HandleImage1Upload" accept="image/*" class="input-custom" style="padding:10px; font-size:13.5px;" />
+                    @if (!string.IsNullOrEmpty(img1Data))
+                    {
+                        <span style="font-size:12px; color:var(--orange); font-weight:700; font-family:var(--mono);">✓ Image 1 Loaded</span>
+                    }
+                </div>
+
+                <div class="tool-field">
+                    <label>Second Image</label>
+                    <InputFile OnChange="HandleImage2Upload" accept="image/*" class="input-custom" style="padding:10px; font-size:13.5px;" />
+                    @if (!string.IsNullOrEmpty(img2Data))
+                    {
+                        <span style="font-size:12px; color:var(--orange); font-weight:700; font-family:var(--mono);">✓ Image 2 Loaded</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Demo Button & Export Button -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:32px;">
+                <button type="button" class="pill pill-line" @onclick="LoadSamplePhotos">
+                    Load Sample Photos
+                </button>
+
+                @if (!string.IsNullOrEmpty(img1Data) && !string.IsNullOrEmpty(img2Data))
+                {
+                    <button type="button" class="pill pill-navy" @onclick="DownloadResult">
+                        Export Collage PNG <span class="ar">→</span>
+                    </button>
+                }
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="tool-grid">
+                <div class="tool-field">
+                    <label>Layout Arrangement</label>
+                    <div style="display:flex; gap:8px;">
+                        <button type="button" class="pill @(isHorizontal ? "pill-navy" : "pill-line")" style="flex:1; padding:10px;" @onclick="@(() => SetOrientation(true))">
+                            Side-by-Side
+                        </button>
+                        <button type="button" class="pill @(!isHorizontal ? "pill-navy" : "pill-line")" style="flex:1; padding:10px;" @onclick="@(() => SetOrientation(false))">
+                            Stacked
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tool-field">
+                    <div style="display:flex; justify-content:space-between;">
+                        <label>Outer Border</label>
+                        <span style="font-family:var(--mono); font-size:12px;">@borderWidth px</span>
+                    </div>
+                    <input type="range" min="0" max="40" step="2" @bind="borderWidth" @bind:after="TriggerRender" style="accent-color:var(--navy);" />
+                </div>
+
+                <div class="tool-field">
+                    <div style="display:flex; justify-content:space-between;">
+                        <label>Gap Spacing</label>
+                        <span style="font-family:var(--mono); font-size:12px;">@gap px</span>
+                    </div>
+                    <input type="range" min="0" max="50" step="2" @bind="gap" @bind:after="TriggerRender" style="accent-color:var(--navy);" />
+                </div>
+
+                <div class="tool-field">
+                    <div style="display:flex; justify-content:space-between;">
+                        <label>Corner Radius</label>
+                        <span style="font-family:var(--mono); font-size:12px;">@borderRadius px</span>
+                    </div>
+                    <input type="range" min="0" max="40" step="2" @bind="borderRadius" @bind:after="TriggerRender" style="accent-color:var(--navy);" />
+                </div>
+
+                <div class="tool-field">
+                    <label>Canvas / Border Color</label>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <input type="color" @bind="borderColor" @bind:after="TriggerRender" style="width:40px; height:40px; border:none; border-radius:8px; cursor:pointer;" />
+                        <input type="text" class="input-custom" @bind="borderColor" @bind:after="TriggerRender" style="font-family:var(--mono); font-size:13px; padding:8px 12px;" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canvas View Area -->
+            <div style="background:var(--navy); border-radius:18px; padding:32px; display:flex; align-items:center; justify-content:center; overflow:auto; min-height:420px; border:2px solid var(--navy);">
+                <canvas @ref="canvasRef" style="max-width:100%; height:auto; box-shadow:0 15px 35px rgba(0,0,0,0.5); display:@(hasRendered ? "block" : "none");"></canvas>
+
+                @if (!hasRendered)
+                {
+                    <div style="text-align:center; color:var(--cream); padding:48px 24px;">
+                        <h4 style="font-size:22px; margin-bottom:8px;">Select Two Images</h4>
+                        <p style="font-size:14px; opacity:0.8; max-width:400px; margin:0 auto 20px;">
+                            Upload two images or click "Load Sample Photos" to see the instant live collage preview.
+                        </p>
+                        <button type="button" class="pill pill-orange" @onclick="LoadSamplePhotos">
+                            Load Sample Photos <span class="ar">→</span>
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ElementReference canvasRef;
+    private string? img1Data;
+    private string? img2Data;
+    private bool isHorizontal = true;
+    private int borderWidth = 16;
+    private int gap = 16;
+    private int borderRadius = 8;
+    private string borderColor = "#06173A";
+    private bool hasRendered = false;
+
+    private async Task HandleImage1Upload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            using var stream = file.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            img1Data = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+            await CheckAndRender();
+        }
+    }
+
+    private async Task HandleImage2Upload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            using var stream = file.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            img2Data = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+            await CheckAndRender();
+        }
+    }
+
+    private async Task LoadSamplePhotos()
+    {
+        img1Data = "images/profile/ali.webp";
+        img2Data = "images/certs/AI-Agent-Developer-Coursera-1SAZ0QCQFMT0.webp";
+        await CheckAndRender();
+    }
+
+    private async Task SetOrientation(bool horizontal)
+    {
+        isHorizontal = horizontal;
+        await TriggerRender();
+    }
+
+    private async Task CheckAndRender()
+    {
+        if (!string.IsNullOrEmpty(img1Data) && !string.IsNullOrEmpty(img2Data))
+        {
+            hasRendered = true;
+            StateHasChanged();
+            await Task.Delay(100);
+            await TriggerRender();
+        }
+    }
+
+    private async Task TriggerRender()
+    {
+        if (!string.IsNullOrEmpty(img1Data) && !string.IsNullOrEmpty(img2Data))
+        {
+            hasRendered = true;
+            await JS.InvokeVoidAsync("portfolio.renderCollage", canvasRef, img1Data, img2Data, isHorizontal, borderWidth, borderColor, gap, borderRadius);
+        }
+    }
+
+    private async Task DownloadResult()
+    {
+        if (hasRendered)
+        {
+            await JS.InvokeVoidAsync("portfolio.downloadCanvas", canvasRef, "aliraza-collage.png");
+        }
+    }
+}

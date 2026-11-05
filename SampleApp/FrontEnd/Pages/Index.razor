@@ -1,0 +1,543 @@
+@page "/"
+@using FrontEnd.Data
+@using FrontEnd.Shared
+@inject PortfolioApiClient Api
+@inject IJSRuntime JS
+
+<PageTitle>Ali Raza — Boring AI That Works for Real Businesses</PageTitle>
+
+<!-- HERO SECTION -->
+<section class="hero" id="hero">
+    <div class="slot" aria-hidden="true">boring.</div>
+    <div class="wrap" style="position:relative; z-index:1; width:100%;">
+        <!-- Badge -->
+        <span class="tag">
+            <i></i>
+            Real AI for Growing Businesses
+        </span>
+
+        <!-- Main Mega Headline -->
+        <h1 class="mega" style="margin-top:24px;">
+            I deploy boring AI for businesses, <span class="it">the kind that <span class="ul">actually works.</span></span>
+        </h1>
+
+        <!-- Hero Foot -->
+        <div class="hero-foot">
+            <div class="hero-left">
+                <p class="hero-sub">
+                    Real AI your team actually uses, not another tool that sits untouched. <span class="it">Grounded RAG systems, autonomous agents, and async backends in Python and .NET 10.</span>
+                </p>
+                <div style="margin-top:18px; display:inline-flex; align-items:center; gap:10px; font-size:13px; font-family:var(--mono); color:var(--navy); background:var(--cream-2); border:1px solid var(--line); padding:6px 14px; border-radius:999px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:var(--orange);"></span>
+                    Certified AI Agent Developer (Vanderbilt &amp; UC Davis)
+                </div>
+            </div>
+
+            <div class="hero-cta">
+                <div class="hero-btns">
+                    <a href="#contact" class="pill pill-navy" @onclick:preventDefault @onclick="@(() => ScrollToSection("contact"))">
+                        Start a Project <span class="ar">→</span>
+                    </a>
+                    <a href="#results" class="pill pill-line" @onclick:preventDefault @onclick="@(() => ScrollToSection("results"))">
+                        Explore Case Studies
+                    </a>
+                </div>
+                <div class="cred">
+                    Free 30-minute consultation first. I'll tell you honestly if AI is worth doing for your use case.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TRUST & CREDENTIALS MARQUEE -->
+<div class="trust" aria-label="Credentials and technologies">
+    <div class="drum">
+        <span class="trust-item"><span class="bullet"></span>Vanderbilt University AI Spec</span>
+        <span class="trust-item"><span class="bullet"></span>LangGraph &amp; LangChain</span>
+        <span class="trust-item"><span class="bullet"></span>FastAPI Async Microservices</span>
+        <span class="trust-item"><span class="bullet"></span>.NET 10 &amp; Blazor Server</span>
+        <span class="trust-item"><span class="bullet"></span>UC Davis Multi-Agent Systems</span>
+        <span class="trust-item"><span class="bullet"></span>NVIDIA LLM Applications</span>
+        <span class="trust-item"><span class="bullet"></span>EC-Council CHFI Certified</span>
+        <span class="trust-item"><span class="bullet"></span>Pinecone &amp; Qdrant Vectors</span>
+        <span class="trust-item"><span class="bullet"></span>n8n &amp; Make.com Automation</span>
+        <!-- Repeated for seamless loop -->
+        <span class="trust-item"><span class="bullet"></span>Vanderbilt University AI Spec</span>
+        <span class="trust-item"><span class="bullet"></span>LangGraph &amp; LangChain</span>
+        <span class="trust-item"><span class="bullet"></span>FastAPI Async Microservices</span>
+        <span class="trust-item"><span class="bullet"></span>.NET 10 &amp; Blazor Server</span>
+        <span class="trust-item"><span class="bullet"></span>UC Davis Multi-Agent Systems</span>
+        <span class="trust-item"><span class="bullet"></span>NVIDIA LLM Applications</span>
+        <span class="trust-item"><span class="bullet"></span>EC-Council CHFI Certified</span>
+        <span class="trust-item"><span class="bullet"></span>Pinecone &amp; Qdrant Vectors</span>
+        <span class="trust-item"><span class="bullet"></span>n8n &amp; Make.com Automation</span>
+    </div>
+</div>
+
+<!-- MANIFESTO / "HOW I DEFINE BORING AI" (DEEP MIDNIGHT NAVY SECTION) -->
+<section class="sec-honesty on-navy" id="manifesto">
+    <div class="slot" aria-hidden="true">zero.</div>
+    <div class="wrap">
+        <div class="h-grid">
+            <div>
+                <span class="eyebrow" style="color:var(--cream);">Here Is How I Define Boring</span>
+                <h2>
+                    To me, boring means no <span class="bad">hype</span>, no <span class="bad">jargon</span>, and no <span class="bad">AI for AI's sake</span>.
+                </h2>
+            </div>
+        </div>
+
+        <div class="tenets-grid">
+            <div class="tenet-card">
+                <div class="tenet-num">01</div>
+                <div>
+                    <h3 class="tenet-title">Factual Grounding</h3>
+                    <p class="tenet-desc">
+                        Every LLM response is anchored directly in verified documents, structured vector databases, and deterministic citations. Zero hallucinated data, zero guessing.
+                    </p>
+                </div>
+            </div>
+
+            <div class="tenet-card">
+                <div class="tenet-num">02</div>
+                <div>
+                    <h3 class="tenet-title">Hard Business ROI</h3>
+                    <p class="tenet-desc">
+                        I measure success by concrete metrics: hundreds of manual hours saved per month, sub-second TTFT streaming, and error rates eliminated across high-friction tasks.
+                    </p>
+                </div>
+            </div>
+
+            <div class="tenet-card">
+                <div class="tenet-num">03</div>
+                <div>
+                    <h3 class="tenet-title">Hardened Infrastructure</h3>
+                    <p class="tenet-desc">
+                        Production-grade engineering from day one: async FastAPI and .NET Core backends, tenant-isolated vector indexes, JWT role-based security, and Docker containerization.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PAIN / "SOUND FAMILIAR?" SECTION (WARM CREAM) -->
+<section class="sec-pain" id="pain">
+    <div class="slot" aria-hidden="true">bottlenecks.</div>
+    <div class="wrap">
+        <div class="pain-grid">
+            <div class="pain-left">
+                <span class="eyebrow">Sound Familiar?</span>
+                <h2>
+                    It's your business. You know figuring out AI is non-negotiable, <span class="it">and you just don't know where to start.</span>
+                </h2>
+
+                <div class="pain-list">
+                    <div class="pain-item">
+                        <span class="pain-num">01</span>
+                        <div class="pain-text">
+                            You gave the whole team AI licenses months ago. They use it to reword <span class="kw">emails</span>.
+                        </div>
+                    </div>
+
+                    <div class="pain-item">
+                        <span class="pain-num">02</span>
+                        <div class="pain-text">
+                            "Automate this data handoff" has been sitting on your roadmap for <span class="kw">two years</span>.
+                        </div>
+                    </div>
+
+                    <div class="pain-item">
+                        <span class="pain-num">03</span>
+                        <div class="pain-text">
+                            You have sensitive internal documents and can't risk <span class="kw">data leaks or hallucinated answers</span>.
+                        </div>
+                    </div>
+
+                    <div class="pain-item">
+                        <span class="pain-num">04</span>
+                        <div class="pain-text">
+                            You've watched AI demos all year. <span class="kw">None of them fit</span> how your actual systems, databases, and teams work.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sticky CTA Card -->
+            <div>
+                <div class="pain-card-cta">
+                    <div>
+                        <span style="font-family:var(--mono); font-size:12px; font-weight:700; text-transform:uppercase; color:var(--orange); letter-spacing:.08em;">
+                            The Practical Alternative
+                        </span>
+                        <h3 style="font-size:28px; font-weight:700; color:var(--navy); margin-top:8px; line-height:1.15; letter-spacing:-.02em;">
+                            Get a production AI architecture in days.
+                        </h3>
+                    </div>
+
+                    <p style="font-size:15px; color:var(--ink-2); line-height:1.6;">
+                        Two focused sessions to identify your exact operational bottlenecks, select the right RAG and agent architecture, and design a hardened system tailored to your team.
+                    </p>
+
+                    <div style="border-top:1px solid var(--line); padding-top:20px; display:flex; flex-direction:column; gap:12px;">
+                        <div style="font-size:13.5px; font-weight:600; color:var(--navy); display:flex; align-items:center; gap:8px;">
+                            <span style="color:var(--orange);">✓</span> 100% Grounded on your own documents
+                        </div>
+                        <div style="font-size:13.5px; font-weight:600; color:var(--navy); display:flex; align-items:center; gap:8px;">
+                            <span style="color:var(--orange);">✓</span> Full source code &amp; cloud deployment
+                        </div>
+                        <div style="font-size:13.5px; font-weight:600; color:var(--navy); display:flex; align-items:center; gap:8px;">
+                            <span style="color:var(--orange);">✓</span> Zero ongoing lock-in or licensing markup
+                        </div>
+                    </div>
+
+                    <a href="#contact" class="pill pill-navy" style="width:100%; justify-content:center; padding:16px;" @onclick:preventDefault @onclick="@(() => ScrollToSection("contact"))">
+                        Discuss Your Workflow <span class="ar">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- REAL ENGAGEMENTS / CASE RESULTS (COGENT LABS STYLE CARDS) -->
+<section class="sec-results" id="results">
+    <div class="slot" aria-hidden="true">30x</div>
+    <div class="wrap">
+        <div class="results-head">
+            <div>
+                <span class="eyebrow">Real Engagements</span>
+                <h2>Client Results</h2>
+                <p style="font-size:17px; color:var(--muted); margin-top:8px;">
+                    What happens after deploying grounded, production-grade AI systems
+                </p>
+            </div>
+
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="pill @(filter == "all" ? "pill-navy" : "pill-line")" style="padding:10px 18px; font-size:13px;" @onclick="@(() => SetFilter("all"))">
+                    All Case Studies
+                </button>
+                <button class="pill @(filter == "RAG" ? "pill-navy" : "pill-line")" style="padding:10px 18px; font-size:13px;" @onclick="@(() => SetFilter("RAG"))">
+                    RAG Systems
+                </button>
+                <button class="pill @(filter == "Multi-Agent" ? "pill-navy" : "pill-line")" style="padding:10px 18px; font-size:13px;" @onclick="@(() => SetFilter("Multi-Agent"))">
+                    Multi-Agent Systems
+                </button>
+            </div>
+        </div>
+
+        <div class="cards-track">
+            @for (int i = 0; i < filteredProjects.Count; i++)
+            {
+                var proj = filteredProjects[i];
+                <ProjectCard Project="proj" Index="i" />
+            }
+        </div>
+    </div>
+</section>
+
+<!-- METHOD / THE 4-STEP ENGINEERING SPRINT -->
+<section class="sec-method" id="method">
+    <div class="slot" aria-hidden="true">4</div>
+    <div class="wrap">
+        <div class="m-top">
+            <span class="eyebrow">How We Build</span>
+            <h2>From bottleneck to production <span class="it"><span class="ul">in 4 steps.</span></span></h2>
+            <p style="font-size:18px; color:var(--muted); margin-top:12px; max-width:620px;">
+                Structured engineering sprints. No endless discovery phases, no bloatware. Working software tested against real data.
+            </p>
+        </div>
+
+        <div class="m-cards">
+            <div class="mc">
+                <div class="dots"><i></i><i></i><i></i><i></i><i></i></div>
+                <span class="n">01 / DISCOVERY</span>
+                <div>
+                    <h4>Bottleneck Teardown</h4>
+                    <p>Audit current manual processes, document hand-offs, and external API friction. Pinpoint the top 20% of work draining 80% of team hours.</p>
+                </div>
+            </div>
+
+            <div class="mc">
+                <div class="dots"><i></i><i></i><i></i><i></i><i></i></div>
+                <span class="n">02 / RETRIEVAL</span>
+                <div>
+                    <h4>Vector Architecture</h4>
+                    <p>Design semantic chunking strategies, dense embeddings, and tenant-isolated vector indexing (Pinecone / Qdrant) with hybrid re-ranking.</p>
+                </div>
+            </div>
+
+            <div class="mc">
+                <div class="dots"><i></i><i></i><i></i><i></i><i></i></div>
+                <span class="n">03 / STATE GRAPHS</span>
+                <div>
+                    <h4>Agentic Workflows</h4>
+                    <p>Construct resilient LangGraph state machines, multi-agent triage routing, tool-calling validation, and persistent conversation checkpoints.</p>
+                </div>
+            </div>
+
+            <div class="mc">
+                <div class="dots"><i></i><i></i><i></i><i></i><i></i></div>
+                <span class="n">04 / PRODUCTION</span>
+                <div>
+                    <h4>Cloud Deployment</h4>
+                    <p>Package into async FastAPI and .NET Core containers with Server-Sent Events (SSE) streaming, JWT RBAC, OpenAPI docs, and monitoring.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES & CORE OFFERINGS -->
+<section class="sec-pain" style="background:var(--cream-2); border-top:1px solid var(--line);" id="services">
+    <div class="wrap">
+        <div style="margin-bottom:56px;">
+            <span class="eyebrow">Core Capabilities</span>
+            <h2 style="font-size:clamp(36px, 4.4vw, 68px); line-height:1; letter-spacing:-.035em; margin-top:16px;">
+                Specialized Engineering Services
+            </h2>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:24px;">
+            <!-- Service 1 -->
+            <div class="card c1">
+                <div>
+                    <span class="k">Agentic Intelligence</span>
+                    <h4>RAG System &amp; LangGraph Agents</h4>
+                    <p>
+                        Custom RAG pipelines and autonomous agents that deliver accurate, grounded AI responses backed by your own data with zero hallucinations.
+                    </p>
+                    <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; margin-top:20px; font-size:14px; opacity:0.9;">
+                        <li>✓ Multi-tenant vector retrieval with tenant isolation</li>
+                        <li>✓ LangGraph state graphs with tool calling &amp; memory</li>
+                        <li>✓ Real-time streaming responses over SSE / WebSockets</li>
+                    </ul>
+                </div>
+                <div class="card-foot">
+                    <a href="services/rag-and-llm-agents" class="tlink" style="color:var(--orange);">
+                        Explore Service Specs <span class="ar">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="card c2">
+                <div>
+                    <span class="k">High-Throughput APIs</span>
+                    <h4>FastAPI Backend Engineering</h4>
+                    <p>
+                        Asynchronous REST APIs engineered for speed, low latency, and scale — featuring JWT role-based access control, database layers, and cloud deployment.
+                    </p>
+                    <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; margin-top:20px; font-size:14px; opacity:0.9;">
+                        <li>✓ Full OpenAPI &amp; Swagger interactive documentation</li>
+                        <li>✓ MongoDB &amp; PostgreSQL persistence layers</li>
+                        <li>✓ Docker containerization (Railway, Vercel, Render, AWS)</li>
+                    </ul>
+                </div>
+                <div class="card-foot">
+                    <a href="services/fastapi-backend-engineering" class="tlink" style="color:var(--navy);">
+                        Explore Service Specs <span class="ar">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="card c3">
+                <div>
+                    <span class="k">Process Orchestration</span>
+                    <h4>Workflow Automation — n8n &amp; Make</h4>
+                    <p>
+                        Eliminate manual data entry by connecting CRMs, databases, and APIs in real-time using n8n and Make.com with custom Python logic.
+                    </p>
+                    <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; margin-top:20px; font-size:14px; opacity:0.9;">
+                        <li>✓ End-to-end multi-tool workflow pipelines</li>
+                        <li>✓ Webhook triggers for immediate event execution</li>
+                        <li>✓ Robust retry logic and error logging</li>
+                    </ul>
+                </div>
+                <div class="card-foot">
+                    <a href="services/workflow-automation" class="tlink" style="color:var(--navy);">
+                        Explore Service Specs <span class="ar">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROOF OF LEARNING / CERTIFICATES (EDITORIAL LIGHTBOX) -->
+<section class="sec-certs" id="certifications">
+    <div class="slot" aria-hidden="true">proof.</div>
+    <div class="wrap">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px;">
+            <div>
+                <span class="eyebrow">Proof of Learning</span>
+                <h2 style="font-size:clamp(36px, 4.4vw, 68px); line-height:1; letter-spacing:-.035em; margin-top:16px;">
+                    Verified Certifications
+                </h2>
+                <p style="font-size:16px; color:var(--muted); margin-top:8px;">
+                    Specializations in AI Agent Architecture, Prompt Engineering, Cybersecurity, and Data Science.
+                </p>
+            </div>
+            <div style="font-family:var(--mono); font-size:13px; color:var(--navy); font-weight:700;">
+                10 Verified Credentials
+            </div>
+        </div>
+
+        <div class="certs-grid">
+            @foreach (var cert in certificates)
+            {
+                <div class="cert-item" @onclick="@(() => OpenCert(cert))">
+                    <div class="cert-img-box">
+                        <img src="@cert.ImagePath" alt="@cert.Title" loading="lazy" />
+                    </div>
+                    <div class="cert-info">
+                        <div>
+                            <h5>@cert.Title</h5>
+                            <div class="issuer">@cert.Issuer</div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--line);">
+                            <span class="date">@cert.Date</span>
+                            <span style="font-size:12px; font-weight:700; color:var(--navy);">Inspect ↗</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- FREE DEVELOPER TOOLS STUDIO -->
+<section class="sec-tools" id="tools">
+    <div class="wrap">
+        <div style="margin-bottom:48px;">
+            <span class="eyebrow">Browser Utilities</span>
+            <h2 style="font-size:clamp(36px, 4.4vw, 68px); line-height:1; letter-spacing:-.035em; margin-top:16px;">
+                Developer Tools I've Built
+            </h2>
+            <p style="font-size:16px; color:var(--muted); margin-top:8px;">
+                Zero sign-up, zero external server uploads. Free utilities powered by HTML5 Web Audio and Canvas.
+            </p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:24px;">
+            <!-- Tool 1 -->
+            <div class="card c1">
+                <div>
+                    <span class="k">HTML5 Audio/Video Engine</span>
+                    <h4>Video Speed &amp; Pitch Controller</h4>
+                    <p>
+                        Accelerate or slow down video playback (0.25x to 4.0x) with pitch preservation so audio never squeaks. Features frame-stepping and local file processing.
+                    </p>
+                </div>
+                <div class="card-foot">
+                    <a href="tools/video-speed" class="pill pill-orange" style="padding:12px 22px; font-size:13px;">
+                        Launch Video Speed Tool <span class="ar">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tool 2 -->
+            <div class="card c2">
+                <div>
+                    <span class="k">HTML5 Canvas Engine</span>
+                    <h4>Photo Collage Studio</h4>
+                    <p>
+                        Merge two photos side-by-side or stacked without padding or cropping. Tweak outer borders, gap spacing, corner radius, and download the high-res PNG.
+                    </p>
+                </div>
+                <div class="card-foot">
+                    <a href="tools/collage" class="pill pill-navy" style="padding:12px 22px; font-size:13px;">
+                        Launch Photo Collage Studio <span class="ar">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CLOSING / SCORECARD & INQUIRY SECTION (DEEP MIDNIGHT NAVY) -->
+<section class="sec-closing" id="contact">
+    <div class="slot" aria-hidden="true">start.</div>
+    <div class="wrap">
+        <div class="closing-card">
+            <div class="closing-left">
+                <span class="eyebrow" style="color:var(--cream);">Start Here</span>
+                <h2>
+                    Let's fix the bottlenecks <span class="it" style="color:var(--powder);">slowing your team down.</span>
+                </h2>
+                <p>
+                    I'm open for contract builds, architectural consulting, and full-time engineering engagements around production RAG systems, agents, and FastAPI / .NET backends.
+                </p>
+
+                <div style="display:flex; flex-direction:column; gap:16px; font-size:15px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-weight:700; color:var(--orange); font-family:var(--mono);">EMAIL:</span>
+                        <a href="mailto:167aliraza@gmail.com" style="color:var(--cream); text-decoration:underline;">167aliraza@gmail.com</a>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-weight:700; color:var(--orange); font-family:var(--mono);">GITHUB:</span>
+                        <a href="https://github.com/167AliRaza" target="_blank" rel="noopener" style="color:var(--cream); text-decoration:underline;">github.com/167AliRaza</a>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-weight:700; color:var(--orange); font-family:var(--mono);">LINKEDIN:</span>
+                        <a href="https://www.linkedin.com/in/167aliraza" target="_blank" rel="noopener" style="color:var(--cream); text-decoration:underline;">linkedin.com/in/167aliraza</a>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-weight:700; color:var(--orange); font-family:var(--mono);">LOCATION:</span>
+                        <span style="color:rgba(249,236,224,0.85);">Pakistan (Available for Remote Work Worldwide)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div>
+                <ContactForm />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Certificate Modal -->
+<CertificateModal Certificate="selectedCert" OnClose="CloseCert" />
+
+@code {
+    private List<ProjectItem> projects = new();
+    private List<ProjectItem> filteredProjects = new();
+    private List<CertificateItem> certificates = new();
+    private CertificateItem? selectedCert;
+    private string filter = "all";
+
+    protected override async Task OnInitializedAsync()
+    {
+        projects = await Api.GetProjectsAsync();
+        filteredProjects = projects;
+        certificates = await Api.GetCertificatesAsync();
+    }
+
+    private void SetFilter(string selected)
+    {
+        filter = selected;
+        if (selected == "all")
+        {
+            filteredProjects = projects;
+        }
+        else if (selected == "RAG")
+        {
+            filteredProjects = projects.Where(p => p.Category.Contains("RAG", StringComparison.OrdinalIgnoreCase) || p.TechStack.Any(t => t.Equals("RAG", StringComparison.OrdinalIgnoreCase))).ToList();
+        }
+        else if (selected == "Multi-Agent")
+        {
+            filteredProjects = projects.Where(p => p.Category.Contains("Agent", StringComparison.OrdinalIgnoreCase) || p.TechStack.Any(t => t.Contains("Agent", StringComparison.OrdinalIgnoreCase))).ToList();
+        }
+    }
+
+    private void OpenCert(CertificateItem cert) => selectedCert = cert;
+    private void CloseCert() => selectedCert = null;
+
+    private async Task ScrollToSection(string elementId)
+    {
+        await JS.InvokeVoidAsync("portfolio.scrollToElement", elementId);
+    }
+}

@@ -1,0 +1,114 @@
+@page "/services/{Slug}"
+@using FrontEnd.Data
+@using FrontEnd.Shared
+@inject PortfolioApiClient Api
+@inject NavigationManager Nav
+
+<PageTitle>@(serviceItem?.Title ?? "Service Details") — Ali Raza</PageTitle>
+
+<div style="background:var(--cream); padding-top:140px; padding-bottom:120px;">
+    <div class="wrap">
+        <!-- Breadcrumb -->
+        <div style="display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:32px;">
+            <a href="" style="color:var(--navy);">HOME</a>
+            <span>/</span>
+            <a href="#services" style="color:var(--navy);">SERVICES</a>
+            <span>/</span>
+            <span style="color:var(--orange); font-weight:700;">@(serviceItem?.Title?.ToUpper() ?? Slug.ToUpper())</span>
+        </div>
+
+        @if (serviceItem != null)
+        {
+            <!-- Header -->
+            <div style="max-width:960px; margin-bottom:64px;">
+                <span class="eyebrow">Production Capability</span>
+                <h1 class="mega" style="margin-top:20px; font-size:clamp(38px, 5vw, 78px);">
+                    @serviceItem.Title
+                </h1>
+                <p style="font-size:clamp(18px, 1.6vw, 24px); line-height:1.45; color:var(--ink-2); margin-top:28px;">
+                    @serviceItem.Description
+                </p>
+            </div>
+
+            <!-- Deliverables in Bento Grid -->
+            <div style="margin-bottom:96px;">
+                <span class="eyebrow">Engineering Scope</span>
+                <h2 style="font-size:clamp(32px, 3.8vw, 56px); margin-top:16px; margin-bottom:40px; letter-spacing:-.03em;">
+                    What You Receive
+                </h2>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:24px;">
+                    @foreach (var d in serviceItem.Deliverables)
+                    {
+                        <div class="mc" style="min-height:auto; padding:28px;">
+                            <div class="dots"><i></i><i></i><i></i></div>
+                            <h4 style="font-size:18px; line-height:1.4;">@d</h4>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Related Projects -->
+            @if (relatedProjects.Any())
+            {
+                <div style="margin-bottom:96px;">
+                    <span class="eyebrow">Proven Results</span>
+                    <h2 style="font-size:clamp(32px, 3.8vw, 56px); margin-top:16px; margin-bottom:40px; letter-spacing:-.03em;">
+                        Case Studies in Production
+                    </h2>
+
+                    <div class="cards-track">
+                        @for (int i = 0; i < relatedProjects.Count; i++)
+                        {
+                            var proj = relatedProjects[i];
+                            <ProjectCard Project="proj" Index="i" />
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- CTA Card (Cogent Labs Style) -->
+            <div class="card c1" style="min-height:auto; padding:64px 48px; border-radius:24px; text-align:center;">
+                <h2 style="font-size:clamp(32px, 4vw, 52px); color:var(--cream); letter-spacing:-.03em; margin-bottom:16px;">
+                    Ready to build your @serviceItem.Title?
+                </h2>
+                <p style="color:var(--powder); font-size:17px; max-width:620px; margin:0 auto 36px; line-height:1.6;">
+                    Let's map out your operational bottleneck, data dependencies, and timeline. Working code and concrete ROI from day one.
+                </p>
+                <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+                    <a href="/#contact" class="pill pill-orange">
+                        Start a Conversation <span class="ar">→</span>
+                    </a>
+                    <a href="/#results" class="pill pill-line" style="color:var(--cream); border-color:var(--line-dark);">
+                        View All Projects
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div style="text-align:center; padding:64px 0;">
+                <p style="font-size:18px; color:var(--muted);">Service specification not found.</p>
+                <a href="" class="pill pill-navy" style="margin-top:24px;">Return to Home</a>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Slug { get; set; } = string.Empty;
+
+    private ServiceItem? serviceItem;
+    private List<ProjectItem> relatedProjects = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        serviceItem = await Api.GetServiceBySlugAsync(Slug);
+        if (serviceItem != null && serviceItem.RelatedProjectSlugs.Any())
+        {
+            var allProjects = await Api.GetProjectsAsync();
+            relatedProjects = allProjects.Where(p => serviceItem.RelatedProjectSlugs.Contains(p.Slug)).ToList();
+        }
+    }
+}

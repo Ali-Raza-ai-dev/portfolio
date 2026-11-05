@@ -1,0 +1,54 @@
+@using FrontEnd.Data
+
+<div class="card @CardClass">
+    <div>
+        <div class="k">@Project.Category</div>
+        <h4>@Project.Title</h4>
+        <p>@Project.Description</p>
+
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:20px;">
+            @foreach (var tag in Project.TechStack)
+            {
+                <span style="font-family:var(--mono); font-size:12px; font-weight:600; padding:3px 10px; border-radius:6px; border:1px solid currentColor; opacity:0.8;">
+                    @tag
+                </span>
+            }
+        </div>
+    </div>
+
+    <div class="card-foot">
+        <a href="projects/@Project.Slug" class="tlink">
+            Read Case Study <span class="ar">→</span>
+        </a>
+
+        <div style="display:flex; align-items:center; gap:16px;">
+            @if (!string.IsNullOrEmpty(Project.DemoUrl))
+            {
+                <a href="@Project.DemoUrl" target="_blank" rel="noopener" class="tlink" style="opacity:0.9;">
+                    Live Demo ↗
+                </a>
+            }
+            @if (!string.IsNullOrEmpty(Project.GithubUrl))
+            {
+                <a href="@Project.GithubUrl" target="_blank" rel="noopener" class="tlink" style="opacity:0.9;">
+                    GitHub ↗
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public ProjectItem Project { get; set; } = default!;
+
+    [Parameter]
+    public int Index { get; set; } = 0;
+
+    private string CardClass => (Index % 3) switch
+    {
+        0 => "c1",
+        1 => "c2",
+        _ => "c3"
+    };
+}

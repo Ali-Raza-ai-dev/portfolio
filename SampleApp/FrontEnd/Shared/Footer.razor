@@ -1,0 +1,97 @@
+@inject IJSRuntime JS
+
+<footer class="footer">
+    <div class="wrap">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <div class="logo">
+                    ali<span style="color:var(--orange);">.</span>raza
+                </div>
+                <p>
+                    I design and ship production RAG systems, autonomous LLM agents, and asynchronous APIs that eliminate operational friction and save hundreds of manual hours.
+                </p>
+                <div style="margin-top:20px; display:flex; gap:12px;">
+                    <button class="pill pill-line" style="border-color:var(--line-dark); color:var(--cream); padding:10px 18px; font-size:13px;" @onclick="CopyEmail">
+                        @if (emailCopied)
+                        {
+                            <span style="color:var(--orange);">Copied: 167aliraza@gmail.com</span>
+                        }
+                        else
+                        {
+                            <span>Copy Email (167aliraza@gmail.com)</span>
+                        }
+                    </button>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h5>Navigation</h5>
+                    <ul>
+                        <li><a href="">Home</a></li>
+                        <li><a href="about">About Ali</a></li>
+                        <li><a href="#results" @onclick:preventDefault @onclick="@(() => ScrollToSection("results"))">Client Results</a></li>
+                        <li><a href="#certifications" @onclick:preventDefault @onclick="@(() => ScrollToSection("certifications"))">Proof of Learning</a></li>
+                        <li><a href="#contact" @onclick:preventDefault @onclick="@(() => ScrollToSection("contact"))">Start a Project</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Engineering</h5>
+                    <ul>
+                        <li><a href="services/rag-and-llm-agents">RAG &amp; LangGraph</a></li>
+                        <li><a href="services/fastapi-backend-engineering">FastAPI REST APIs</a></li>
+                        <li><a href="services/workflow-automation">n8n &amp; Make.com</a></li>
+                        <li><a href="tools">Developer Tools Hub</a></li>
+                        <li><a href="http://localhost:8080/scalar" target="_blank" rel="noopener">Interactive API Docs (Scalar)</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Connect</h5>
+                    <ul>
+                        <li><a href="https://github.com/167AliRaza" target="_blank" rel="noopener">GitHub (@@167AliRaza)</a></li>
+                        <li><a href="https://www.linkedin.com/in/167aliraza" target="_blank" rel="noopener">LinkedIn</a></li>
+                        <li><a href="mailto:167aliraza@gmail.com">167aliraza@gmail.com</a></li>
+                        <li><span style="font-size:13px; color:rgba(249,236,224,0.5);">Pakistan · Remote Worldwide</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>
+                &copy; @DateTime.UtcNow.Year Ali Raza. Handcrafted in <strong style="color:var(--cream);">.NET 10 &amp; Blazor Server</strong>. Inspired by editorial engineering excellence.
+            </div>
+            <div>
+                <a href="#top" @onclick:preventDefault @onclick="ScrollToTop" style="color:var(--orange); font-weight:700;">
+                    Back to top ↑
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+@code {
+    private bool emailCopied = false;
+
+    private async Task CopyEmail()
+    {
+        await JS.InvokeVoidAsync("portfolio.copyText", "167aliraza@gmail.com");
+        emailCopied = true;
+        StateHasChanged();
+        await Task.Delay(2500);
+        emailCopied = false;
+        StateHasChanged();
+    }
+
+    private async Task ScrollToSection(string elementId)
+    {
+        await JS.InvokeVoidAsync("portfolio.scrollToElement", elementId);
+    }
+
+    private async Task ScrollToTop()
+    {
+        await JS.InvokeVoidAsync("portfolio.scrollToTop");
+    }
+}
